@@ -22,47 +22,60 @@ public class RewardTransactionController {
     @Autowired
     private RewardTransactionRepository rewardTransactionRepository;
 
+    /**
+     * Description: POST method to create a new transaction and save into DB
+     * Request: transaction
+     * @return Transaction
+     */
     @PostMapping
-    //POST method to create a new transaction and save into DB
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         Transaction savedTransaction = rewardTransactionService.saveTransaction(transaction);
         return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
     }
 
+    /**
+     * Description: GET method to retrieve all transactions from DB
+     * @return List<Transaction>
+     */
     @GetMapping()
-    //GET method to retrieve all transactions from DB
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = rewardTransactionRepository.findAll();
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
+    /**
+     * Description: GET method to retrieve all transactions for a particular customer
+     * Request: customerId
+     * @return List<Transaction>
+     */
     @GetMapping("/customer/{customerId}")
-    //GET method to retrieve all transactions for a particular customer
     public ResponseEntity<List<Transaction>> getTransactionsByCustomerId(@PathVariable Long customerId) {
         List<Transaction> transactions = rewardTransactionService.getTransactionsByCustomerId(customerId);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
+    /**
+     * Description: GET method to retrieve all reward points for a particular customer
+     * Request: customerId
+     * @return Map<String, Integer>
+     */
     @GetMapping("/rewards/{customerId}")
-    //GET method to retrieve all reward points for a particular customer
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId) {
         Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomer(customerId);
         return ResponseEntity.ok(rewards);
     }
 
+    /**
+     * Description: GET method to retrieve all reward points for a particular customer between transaction dates
+     * Request: customerId, startDate, endDate
+     * @return Map<String, Integer>
+     */
     @GetMapping("/rewards/date/{customerId}")
-    //GET method to retrieve all reward points for a particular customer between transaction dates
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId,
                                                                 @RequestParam String startDate,
                                                                 @RequestParam String endDate) {
         Map<String, Integer> rewards = rewardTransactionService.calculateRewardPoints(customerId, LocalDate.parse(startDate), LocalDate.parse(endDate));
         return new ResponseEntity<>(rewards, HttpStatus.OK);
-    }
-
-
-    @ExceptionHandler()
-    public ResponseEntity<String> handleException(Exception e) {
-        return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

@@ -31,6 +31,11 @@ public class RewardTransactionService {
         return rewardTransactionRepository.findByCustomerId(customerId);
     }
 
+    /**
+     * Description: Retrieves rewards for customer by id
+     * Request: customerId
+     * @return Map<String, Integer>
+     */
     public Map<String, Integer> getRewardsByCustomer(Long customerId) {
         LOG.debug("Fetching rewards for customer with ID: {}", customerId);
         Map<String, Integer> rewards = new HashMap<>();
@@ -49,6 +54,11 @@ public class RewardTransactionService {
         return rewards;
     }
 
+    /**
+     * Description: Retrieves reward points for a customer between transaction date
+     * Request: customerId, startDate, endDate
+     * @return Map<String, Integer>
+     */
     public Map<String, Integer>calculateRewardPoints(Long customerId, LocalDate startDate, LocalDate endDate) {
         LOG.debug("Fetching reward points for customer with ID: {}, start Date {}, end date {}", customerId, startDate, endDate);
         List<Transaction> transactions = rewardTransactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
@@ -58,6 +68,11 @@ public class RewardTransactionService {
         ));
     }
 
+    /**
+     * Description: Calculate reward points for a customer
+     * Request: transaction
+     * @return int
+     */
     private int calculatePoints(@NotNull Transaction transaction) {
         LOG.debug("Fetching reward points for customer with ID: {}", transaction.getCustomerId());
         double amount = transaction.getAmount();
@@ -74,6 +89,11 @@ public class RewardTransactionService {
         return points;
     }
 
+    /**
+     * Description: Calculate reward points for a customer
+     * Request: transaction
+     * @return int
+     */
     public int getPointsForTransaction(Transaction transaction) {
         return calculatePoints(transaction);
     }

@@ -24,8 +24,6 @@ public class RewardTransactionRepositoryTest {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private Transaction transaction1, transaction2;
-
     Long customerId;
     LocalDate startDate;
     LocalDate endDate;
