@@ -112,6 +112,7 @@ public class RewardTransactionServiceTest {
         assertNotNull(rewards);
         assertEquals(2, rewards.size());
         assertTrue(rewards.values().stream().mapToInt(Integer::intValue).sum() > 0);
+        assertEquals(750, rewards.values().stream().mapToInt(Integer::intValue).sum());
     }
 
     @Test
@@ -123,6 +124,30 @@ public class RewardTransactionServiceTest {
 
         assertTrue(points >= 0); // Ensure points calculation logic is correct
         assertEquals(90, points);
+    }
+
+    @Test
+    public void testGetPointsForTransactionBelow100() {
+        // Create a sample transaction
+        Transaction transaction = new Transaction(4L, 44444L, 60.0, LocalDate.now());
+
+        int points = rewardTransactionService.getPointsForTransaction(transaction);
+
+        // Ensure points calculation logic is correct
+        assertTrue(points >= 0);
+        assertEquals(10, points);
+    }
+
+    @Test
+    public void testGetPointsForTransactionBelow50() {
+        // Create a sample transaction
+        Transaction transaction = new Transaction(4L, 44444L, 40.0, LocalDate.now());
+
+        int points = rewardTransactionService.getPointsForTransaction(transaction);
+
+        // Ensure points calculation logic is correct
+        assertTrue(points >= 0);
+        assertEquals(0, points);
     }
 
 

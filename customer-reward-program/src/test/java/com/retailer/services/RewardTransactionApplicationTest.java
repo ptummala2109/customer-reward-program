@@ -1,7 +1,6 @@
 package com.retailer.services;
 
 import com.retailer.services.model.Transaction;
-import com.retailer.services.repository.RewardTransactionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,6 @@ public class RewardTransactionApplicationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private RewardTransactionRepository rewardTransactionRepository;
-
     @Test
     public void testCreateTransactionAndSave() {
         String baseUrl = "http://localhost:" + port + "/retailer/api/transactions";
@@ -46,7 +42,6 @@ public class RewardTransactionApplicationTest {
     @Test
     public void testRetrieveAllTransactions() {
         String baseUrl = "http://localhost:" + port + "/retailer/api/transactions";
-        Transaction transaction = new Transaction(null, 1L, 120.0, LocalDate.now());
 
         ResponseEntity<Transaction[]> getAllResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
         assertEquals(HttpStatus.OK, getAllResponse.getStatusCode());
@@ -56,7 +51,7 @@ public class RewardTransactionApplicationTest {
 
     @Test
     public void testGetTransactionsByCustomerId() {
-        Long customerId = 99999L;
+        long customerId = 99999L;
         String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/customer/"+customerId;
 
         ResponseEntity<Transaction[]> getTransactionResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
@@ -66,19 +61,43 @@ public class RewardTransactionApplicationTest {
     }
 
     @Test
+    public void testGetTransactionsByCustomerIdNotExist() {
+        long customerId = 999L;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/customer/"+customerId;
+
+        ResponseEntity<Transaction[]> getTransactionResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
+        assertEquals(HttpStatus.OK, getTransactionResponse.getStatusCode());
+        assertNotNull(getTransactionResponse.getBody());
+        assertEquals(0,getTransactionResponse.getBody().length);
+    }
+
+    @Test
     public void testGetRewardsByCustomerId() {
-        Long customerId = 99999L;
+        long customerId = 99999L;
         String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/rewards/"+customerId;
 
         ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
         assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
         assertNotNull(getRewardsResponse.getBody());
         assertEquals(3,getRewardsResponse.getBody().size());
+        assertEquals(90, getRewardsResponse.getBody().get("2024-06"));
+    }
+
+    @Test
+    public void testGetRewardsByCustomerIdNotExist() {
+        long customerId = 999L;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/rewards/"+customerId;
+
+        ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
+        assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
+        assertNotNull(getRewardsResponse.getBody());
+        assertEquals(3,getRewardsResponse.getBody().size());
+        assertEquals(0, getRewardsResponse.getBody().get("2024-06"));
     }
 
     @Test
     public void testGetRewardsByCustomerIdAndTransactionDate() {
-        Long customerId = 12345L;
+        long customerId = 12345L;
         LocalDate startDate = LocalDate.of(2024, 4, 22);
         LocalDate endDate = LocalDate.of(2024, 6, 22);
         String basePath = "/retailer/api/transactions/rewards/date/";
@@ -101,6 +120,34 @@ public class RewardTransactionApplicationTest {
         assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
         assertNotNull(getRewardsResponse.getBody());
         assertEquals(2,getRewardsResponse.getBody().size());
+        assertEquals(52,getRewardsResponse.getBody().get("MAY"));
+    }
+
+    @Test
+    public void testGetRewardsByCustomerIdNotExistAndTransactionDate() {
+        long customerId = 123L;
+        LocalDate startDate = LocalDate.of(2024, 4, 22);
+        LocalDate endDate = LocalDate.of(2024, 6, 22);
+        String basePath = "/retailer/api/transactions/rewards/date/";
+
+        Map<String, LocalDate> queryParams = new HashMap<>();
+        queryParams.put("startDate", startDate);
+        queryParams.put("endDate", endDate);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("localhost")
+                .port(port)
+                .path(basePath + customerId);
+
+        queryParams.forEach(builder::queryParam);
+
+        String baseUrl = builder.toUriString();
+
+        ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
+        assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
+        assertNotNull(getRewardsResponse.getBody());
+        assertEquals(0,getRewardsResponse.getBody().size());
     }
 
 
