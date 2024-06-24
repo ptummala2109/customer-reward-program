@@ -105,7 +105,7 @@ public class RewardTransactionControllerTest {
         rewards.put("February", 150);
 
         // Mock the service method
-        when(rewardTransactionService.getRewardsByCustomer(anyLong())).thenReturn(rewards);
+        when(rewardTransactionService.getRewardsByCustomerId(anyLong())).thenReturn(rewards);
 
         // Perform GET request to /api/transactions/rewards/{customerId}
         mockMvc.perform(get("/api/transactions/rewards/1")

@@ -15,8 +15,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
@@ -66,9 +65,8 @@ public class RewardTransactionApplicationTest {
         String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/customer/"+customerId;
 
         ResponseEntity<Transaction[]> getTransactionResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
-        assertEquals(HttpStatus.OK, getTransactionResponse.getStatusCode());
-        assertNotNull(getTransactionResponse.getBody());
-        assertEquals(0,getTransactionResponse.getBody().length);
+        assertEquals(HttpStatus.NOT_FOUND, getTransactionResponse.getStatusCode());
+        assertNull(getTransactionResponse.getBody());
     }
 
     @Test
@@ -145,9 +143,8 @@ public class RewardTransactionApplicationTest {
         String baseUrl = builder.toUriString();
 
         ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
-        assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
-        assertNotNull(getRewardsResponse.getBody());
-        assertEquals(0,getRewardsResponse.getBody().size());
+        assertEquals(HttpStatus.NOT_FOUND, getRewardsResponse.getStatusCode());
+        assertNull(getRewardsResponse.getBody());
     }
 
 

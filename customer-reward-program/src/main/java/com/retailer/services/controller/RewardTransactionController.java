@@ -1,5 +1,7 @@
 package com.retailer.services.controller;
 
+import com.retailer.services.exception.InvalidRequestException;
+import com.retailer.services.exception.ResourceNotFoundException;
 import com.retailer.services.model.Transaction;
 import com.retailer.services.repository.RewardTransactionRepository;
 import com.retailer.services.service.RewardTransactionService;
@@ -29,8 +31,12 @@ public class RewardTransactionController {
      */
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
-        Transaction savedTransaction = rewardTransactionService.saveTransaction(transaction);
-        return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
+        try {
+            Transaction savedTransaction = rewardTransactionService.saveTransaction(transaction);
+            return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
+        } catch (InvalidRequestException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     /**
@@ -50,8 +56,12 @@ public class RewardTransactionController {
      */
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<Transaction>> getTransactionsByCustomerId(@PathVariable Long customerId) {
-        List<Transaction> transactions = rewardTransactionService.getTransactionsByCustomerId(customerId);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+        try {
+            List<Transaction> transactions = rewardTransactionService.getTransactionsByCustomerId(customerId);
+            return new ResponseEntity<>(transactions, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     /**
@@ -61,8 +71,12 @@ public class RewardTransactionController {
      */
     @GetMapping("/rewards/{customerId}")
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId) {
-        Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomer(customerId);
-        return ResponseEntity.ok(rewards);
+        try {
+            Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomerId(customerId);
+            return ResponseEntity.ok(rewards);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     /**
@@ -74,9 +88,12 @@ public class RewardTransactionController {
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId,
                                                                 @RequestParam String startDate,
                                                                 @RequestParam String endDate) {
-        Map<String, Integer> rewards = rewardTransactionService.calculateRewardPoints(customerId, LocalDate.parse(startDate), LocalDate.parse(endDate));
-        return new ResponseEntity<>(rewards, HttpStatus.OK);
+        try {
+            Map<String, Integer> rewards = rewardTransactionService.calculateRewardPoints(customerId, LocalDate.parse(startDate), LocalDate.parse(endDate));
+            return new ResponseEntity<>(rewards, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 }
-

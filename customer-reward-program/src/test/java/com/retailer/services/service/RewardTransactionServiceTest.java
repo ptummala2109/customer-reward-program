@@ -84,7 +84,7 @@ public class RewardTransactionServiceTest {
                         Mockito.eq(customerId), Mockito.any(LocalDate.class), Mockito.any(LocalDate.class)))
                 .thenReturn(mockTransactions);
 
-        Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomer(customerId);
+        Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomerId(customerId);
 
         assertNotNull(rewards);
         assertEquals(3, rewards.size());

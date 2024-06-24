@@ -1,5 +1,7 @@
 package com.retailer.services.service;
 
+import com.retailer.services.exception.InvalidRequestException;
+import com.retailer.services.exception.ResourceNotFoundException;
 import com.retailer.services.model.Transaction;
 import com.retailer.services.repository.RewardTransactionRepository;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +26,18 @@ public class RewardTransactionService {
     private static final Logger LOG = LoggerFactory.getLogger(RewardTransactionService.class);
 
     public Transaction saveTransaction(Transaction transaction) {
+        if (transaction == null) {
+            throw new InvalidRequestException("Transaction cannot be null");
+        }
         return rewardTransactionRepository.save(transaction);
     }
 
     public List<Transaction>getTransactionsByCustomerId(Long customerId) {
-        return rewardTransactionRepository.findByCustomerId(customerId);
+        List<Transaction> transactions = rewardTransactionRepository.findByCustomerId(customerId);
+        if (transactions.isEmpty()) {
+            throw new ResourceNotFoundException("No transactions found for customer ID " + customerId);
+        }
+        return transactions;
     }
 
     /**
@@ -36,7 +45,7 @@ public class RewardTransactionService {
      * Request: customerId
      * @return Map<String, Integer>
      */
-    public Map<String, Integer> getRewardsByCustomer(Long customerId) {
+    public Map<String, Integer> getRewardsByCustomerId(Long customerId) {
         LOG.debug("Fetching rewards for customer with ID: {}", customerId);
         Map<String, Integer> rewards = new HashMap<>();
         YearMonth currentMonth = YearMonth.now();
@@ -50,6 +59,7 @@ public class RewardTransactionService {
             int points = transactions.stream().mapToInt(this::calculatePoints).sum();
             rewards.put(month.toString(), points);
         }
+
         LOG.debug("Fetched rewards for customer with ID: {}, rewards: {}", customerId, rewards);
         return rewards;
     }
@@ -62,6 +72,9 @@ public class RewardTransactionService {
     public Map<String, Integer>calculateRewardPoints(Long customerId, LocalDate startDate, LocalDate endDate) {
         LOG.debug("Fetching reward points for customer with ID: {}, start Date {}, end date {}", customerId, startDate, endDate);
         List<Transaction> transactions = rewardTransactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
+        if (transactions.isEmpty()) {
+            throw new ResourceNotFoundException("No transactions found for customer ID " + customerId);
+        }
         return transactions.stream().collect(Collectors.groupingBy(
                 transaction ->transaction.getTransactionDate().getMonth().toString(),
                 Collectors.summingInt(this::calculatePoints)
