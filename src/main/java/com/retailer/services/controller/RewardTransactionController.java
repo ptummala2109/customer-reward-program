@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/transactions/v1")
 public class RewardTransactionController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class RewardTransactionController {
      * Request: transaction
      * @return Transaction
      */
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         try {
             Transaction savedTransaction = rewardTransactionService.saveTransaction(transaction);
@@ -43,7 +43,7 @@ public class RewardTransactionController {
      * Description: GET method to retrieve all transactions from DB
      * @return List<Transaction>
      */
-    @GetMapping()
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = rewardTransactionRepository.findAll();
         return new ResponseEntity<>(transactions, HttpStatus.OK);
@@ -54,7 +54,7 @@ public class RewardTransactionController {
      * Request: customerId
      * @return List<Transaction>
      */
-    @GetMapping("/customer/{customerId}")
+    @GetMapping(value = "/customer/{customerId}", produces = "application/json")
     public ResponseEntity<List<Transaction>> getTransactionsByCustomerId(@PathVariable Long customerId) {
         try {
             List<Transaction> transactions = rewardTransactionService.getTransactionsByCustomerId(customerId);
@@ -69,7 +69,7 @@ public class RewardTransactionController {
      * Request: customerId
      * @return Map<String, Integer>
      */
-    @GetMapping("/rewards/{customerId}")
+    @GetMapping(value = "/rewards/{customerId}",  produces = "application/json")
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId) {
         try {
             Map<String, Integer> rewards = rewardTransactionService.getRewardsByCustomerId(customerId);
@@ -84,7 +84,7 @@ public class RewardTransactionController {
      * Request: customerId, startDate, endDate
      * @return Map<String, Integer>
      */
-    @GetMapping("/rewards/date/{customerId}")
+    @GetMapping(value = "/rewards/date/{customerId}", produces = "application/json")
     public ResponseEntity<Map<String, Integer>> getRewardPoints(@PathVariable Long customerId,
                                                                 @RequestParam String startDate,
                                                                 @RequestParam String endDate) {

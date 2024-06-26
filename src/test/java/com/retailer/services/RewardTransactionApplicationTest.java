@@ -29,7 +29,7 @@ public class RewardTransactionApplicationTest {
 
     @Test
     public void testCreateTransactionAndSave() {
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions";
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1";
         Transaction transaction = new Transaction(null, 33333L, 120.0, LocalDate.now());
 
         ResponseEntity<Transaction> response = restTemplate.postForEntity (baseUrl, transaction, Transaction.class);
@@ -40,7 +40,7 @@ public class RewardTransactionApplicationTest {
 
     @Test
     public void testRetrieveAllTransactions() {
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions";
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1";
 
         ResponseEntity<Transaction[]> getAllResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
         assertEquals(HttpStatus.OK, getAllResponse.getStatusCode());
@@ -51,7 +51,7 @@ public class RewardTransactionApplicationTest {
     @Test
     public void testGetTransactionsByCustomerId() {
         long customerId = 99999L;
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/customer/"+customerId;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1/customer/"+customerId;
 
         ResponseEntity<Transaction[]> getTransactionResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
         assertEquals(HttpStatus.OK, getTransactionResponse.getStatusCode());
@@ -62,7 +62,7 @@ public class RewardTransactionApplicationTest {
     @Test
     public void testGetTransactionsByCustomerIdNotExist() {
         long customerId = 999L;
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/customer/"+customerId;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1/customer/"+customerId;
 
         ResponseEntity<Transaction[]> getTransactionResponse = restTemplate.getForEntity(baseUrl, Transaction[].class);
         assertEquals(HttpStatus.NOT_FOUND, getTransactionResponse.getStatusCode());
@@ -72,7 +72,7 @@ public class RewardTransactionApplicationTest {
     @Test
     public void testGetRewardsByCustomerId() {
         long customerId = 99999L;
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/rewards/"+customerId;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1/rewards/"+customerId;
 
         ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
         assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
@@ -84,7 +84,7 @@ public class RewardTransactionApplicationTest {
     @Test
     public void testGetRewardsByCustomerIdNotExist() {
         long customerId = 999L;
-        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/rewards/"+customerId;
+        String baseUrl = "http://localhost:" + port + "/retailer/api/transactions/v1/rewards/"+customerId;
 
         ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
         assertEquals(HttpStatus.OK, getRewardsResponse.getStatusCode());
@@ -98,7 +98,7 @@ public class RewardTransactionApplicationTest {
         long customerId = 12345L;
         LocalDate startDate = LocalDate.of(2024, 4, 22);
         LocalDate endDate = LocalDate.of(2024, 6, 22);
-        String basePath = "/retailer/api/transactions/rewards/date/";
+        String basePath = "/retailer/api/transactions/v1/rewards/date/";
 
         Map<String, LocalDate> queryParams = new HashMap<>();
         queryParams.put("startDate", startDate);
@@ -126,7 +126,7 @@ public class RewardTransactionApplicationTest {
         long customerId = 123L;
         LocalDate startDate = LocalDate.of(2024, 4, 22);
         LocalDate endDate = LocalDate.of(2024, 6, 22);
-        String basePath = "/retailer/api/transactions/rewards/date/";
+        String basePath = "/retailer/api/transactions/v1/rewards/date/";
 
         Map<String, LocalDate> queryParams = new HashMap<>();
         queryParams.put("startDate", startDate);

@@ -51,8 +51,8 @@ public class RewardTransactionControllerTest {
         // Mock the service method
         when(rewardTransactionService.saveTransaction(any(Transaction.class))).thenReturn(savedTransaction);
 
-        // Perform POST request to /api/transactions
-        mockMvc.perform(post("/api/transactions")
+        // Perform POST request to /api/transactions/v1
+        mockMvc.perform(post("/api/transactions/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(transaction)))
                 .andDo(print())  // Print the response for debugging
@@ -71,8 +71,8 @@ public class RewardTransactionControllerTest {
         // Mock the service method
         when(rewardTransactionRepository.findAll()).thenReturn(Collections.singletonList(transaction));
 
-        // Perform GET request to /api/transactions
-        mockMvc.perform(get("/api/transactions"))
+        // Perform GET request to /api/transactions/v1
+        mockMvc.perform(get("/api/transactions/v1"))
                 .andDo(print()) // Print the response for debugging
                 .andExpect(status().isOk()) // Verify the response status is 200 OK
                 .andExpect(jsonPath("$[0].customer_id").value(1)) // Verify the customer ID in the response
@@ -87,8 +87,8 @@ public class RewardTransactionControllerTest {
         // Mock the service method
         when(rewardTransactionService.getTransactionsByCustomerId(anyLong())).thenReturn(Collections.singletonList(transaction));
 
-        // Perform GET request to /api/transactions/customer/{customerId}
-        mockMvc.perform(get("/api/transactions/customer/1")
+        // Perform GET request to /api/transactions/v1/customer/{customerId}
+        mockMvc.perform(get("/api/transactions/v1/customer/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()) // Print the response for debugging
                 .andExpect(status().isOk()) // Verify the response status is 200 OK
@@ -107,8 +107,8 @@ public class RewardTransactionControllerTest {
         // Mock the service method
         when(rewardTransactionService.getRewardsByCustomerId(anyLong())).thenReturn(rewards);
 
-        // Perform GET request to /api/transactions/rewards/{customerId}
-        mockMvc.perform(get("/api/transactions/rewards/1")
+        // Perform GET request to /api/transactions/v1/rewards/{customerId}
+        mockMvc.perform(get("/api/transactions/v1/rewards/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print()) // Print the response for debugging
                 .andExpect(status().isOk()) // Verify the response status is 200 OK
@@ -130,8 +130,8 @@ public class RewardTransactionControllerTest {
         String startDate = "2023-01-01";
         String endDate = "2023-02-28";
 
-        // Perform GET request to /api/transactions/rewards/date/1 with request parameters
-        mockMvc.perform(get("/api/transactions/rewards/date/1")
+        // Perform GET request to /api/transactions/v1/rewards/date/1 with request parameters
+        mockMvc.perform(get("/api/transactions/v1/rewards/date/1")
                         .param("startDate", startDate)
                         .param("endDate", endDate)
                         .contentType(MediaType.APPLICATION_JSON))
