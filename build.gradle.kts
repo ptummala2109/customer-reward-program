@@ -2,6 +2,8 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.3.1"
 	id("io.spring.dependency-management") version "1.1.5"
+	kotlin("jvm") version "1.8.20"
+	id("jacoco")
 }
 
 group = "com.myretailer.services"
@@ -10,7 +12,7 @@ description = "Restfull service for the retailer application"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -37,9 +39,20 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
-
+	testImplementation(kotlin("test"))
 }
 
-tasks.withType<Test> {
+tasks.test {
 	useJUnitPlatform()
+	finalizedBy("jacocoTestReport") // Generate the report after tests run
+}
+
+tasks.named<JacocoReport>("jacocoTestReport") {
+	dependsOn(tasks.test) // Tests should run before generating the report
+
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+		html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+	}
 }
