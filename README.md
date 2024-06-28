@@ -126,3 +126,15 @@ Returns appropriate HTTP status codes (200, 400, 422, 500) with human-readable m
 3. JDBC_URL: jdbc:h2:mem:my_retailer_db, username: sa, password: password
 
 ![img.png](img.png)
+
+## Build (Github Action)
+
+1. Every Push and Pull to github will trigger github actions build which will do the gradle clean build.
+2. Also a cron job is included for the build to auto trigger everyday.
+3. https://github.com/ptummala2109/customer-reward-program/actions
+
+![img_1.png](img_1.png)
+
+## Code coverage
+
+![img_2.png](img_2.png)
