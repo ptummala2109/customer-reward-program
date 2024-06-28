@@ -31,7 +31,7 @@ To run the application, execute the following steps:
 ## API Documentation
 
 ### Create a Transaction
-- **URL:** `/api/transactions`
+- **URL:** `http://localhost:8080/retailer/api/transactions/v1`
 - **Method:** `POST`
 - **Request Body:**
 ```json
@@ -39,17 +39,45 @@ To run the application, execute the following steps:
     "trans_id": 1,
     "customer_id": 99999,
     "amount": 120.0,
-    "transaction_date": "2024-06-22"
+    "transaction_date": "2024-06-27"
+}
+```
+
+- **Response Body:**
+```json
+{
+    "trans_id": 1,
+    "customer_id": 99999,
+    "amount": 120.0,
+    "transaction_date": "2024-06-27"
 }
 ```
 
 ### Get All Transactions
-- **URL:** `/api/transactions`
+- **URL:** `http://localhost:8080/retailer/api/transactions/v1`
 - **Method:** GET
+- **Response Body:** Example
+```json
+[
+   {
+      "trans_id": 1,
+      "customer_id": 99999,
+      "amount": 120.0,
+      "transaction_date": "2024-06-24"
+   },
+   {
+      "trans_id": 2,
+      "customer_id": 98765,
+      "amount": 120.0,
+      "transaction_date": "2024-02-27"
+   }
+]
+```
 
 ### Get Transactions by CustomerId
-- **URL:** `/api/transactions/customer/{customerId}`
+- **URL:** `http://localhost:8080/retailer/api/transactions/v1/customer/99999`
 - **Method:** GET
+- **Path Variable:** customer_id
 - **Response Body:** 
 ```json lines
 [
@@ -57,14 +85,15 @@ To run the application, execute the following steps:
         "trans_id": 1,
         "customer_id": 99999,
         "amount": 120.0,
-        "transaction_date": "2024-06-22"
+        "transaction_date": "2024-06-27"
     }
 ]
 ```
 
 ### Get Reward points for a Customer
-- **URL:** `/api/transactions/rewards/{customerId}`
+- **URL:** `http://localhost:8080/retailer/api/transactions/v1/rewards/99999`
 - **Method:** GET
+- **Path Variable:** customer_id
 - **Response Body:**
 ```json lines
 {
@@ -75,7 +104,8 @@ To run the application, execute the following steps:
 ```
 
 ### Get Reward points for a Customer between Transaction Date
-- **URL:** `/api/transactions/rewards/date/{customerId}`
+- **URL:** `http://localhost:8080/retailer/api/transactions/v1/rewards/date/12345?startDate=2024-04-27&endDate=2024-06-27`
+- **Path Variable:** customer_id
 - **Request Parameters:** `startDate<LocalDate>` and `endDate<LocalDate>`
 - **Method:** GET
 - **Response Body:**
@@ -90,3 +120,9 @@ To run the application, execute the following steps:
 ### Error Handling
 Returns appropriate HTTP status codes (200, 400, 422, 500) with human-readable messages.
 
+## H2 Config
+1. data.sql and schema.sql are created for customer(s) and sample transactions are included.
+2. http://localhost:8080/retailer/h2-console (To view the h2 db console)
+3. JDBC_URL: jdbc:h2:mem:my_retailer_db, username: sa, password: password
+
+![img.png](img.png)

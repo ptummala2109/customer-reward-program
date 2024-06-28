@@ -144,7 +144,35 @@ public class RewardTransactionApplicationTest {
 
         ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
         assertEquals(HttpStatus.NOT_FOUND, getRewardsResponse.getStatusCode());
-        assertNull(getRewardsResponse.getBody());
+        assertNotNull(getRewardsResponse.getBody());
+        assertEquals(getRewardsResponse.getBody().get("No transactions found for customer ID 123"),0);
+    }
+
+    @Test
+    public void testGetRewardsByCustomerIdAndInvalidTransactionDate() {
+        long customerId = 12345L;
+        LocalDate startDate = LocalDate.of(2024, 7, 22);
+        LocalDate endDate = LocalDate.of(2024, 9, 22);
+        String basePath = "/retailer/api/transactions/v1/rewards/date/";
+
+        Map<String, LocalDate> queryParams = new HashMap<>();
+        queryParams.put("startDate", startDate);
+        queryParams.put("endDate", endDate);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("localhost")
+                .port(port)
+                .path(basePath + customerId);
+
+        queryParams.forEach(builder::queryParam);
+
+        String baseUrl = builder.toUriString();
+
+        ResponseEntity<Map> getRewardsResponse = restTemplate.getForEntity(baseUrl, Map.class);
+        assertEquals(HttpStatus.NOT_FOUND, getRewardsResponse.getStatusCode());
+        assertNotNull(getRewardsResponse.getBody());
+        assertEquals(getRewardsResponse.getBody().get("No transactions found for customer ID 12345"),0);
     }
 
 

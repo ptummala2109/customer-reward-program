@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,9 @@ public class RewardTransactionController {
             Map<String, Integer> rewards = rewardTransactionService.calculateRewardPoints(customerId, LocalDate.parse(startDate), LocalDate.parse(endDate));
             return new ResponseEntity<>(rewards, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            Map<String, Integer> response = new HashMap<>();
+            response.put(e.getMessage(),0);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 

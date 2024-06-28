@@ -14,12 +14,3 @@ CREATE TABLE IF NOT EXISTS transactions (
     transaction_date TIMESTAMP NOT NULL,
     CONSTRAINT FK_PMT_TRANS_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
 );
-
-//DROP TABLE IF EXISTS customer_rewards;
-CREATE TABLE IF NOT EXISTS customer_rewards (
-    rewards_id BIGINT AUTO_INCREMENT PRIMARY KEY ,
-    customer_id BIGINT NOT NULL,
-    reward_points BIGINT NOT NULL,
-    last_updated_dt TIMESTAMP NOT NULL,
-    CONSTRAINT FK_REWARDS_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
-);
